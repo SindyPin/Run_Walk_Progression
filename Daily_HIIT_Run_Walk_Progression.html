@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Daily HIIT Run-Walk</title>
+<style>
+:root{
+  --text:#172033;
+  --muted:#667085;
+  --border:#d0d5dd;
+  --surface:#ffffff;
+  --surface-soft:#f8fafc;
+  --shadow:0 10px 30px rgba(16,24,40,.08);
+  --mon:#dbeafe;
+  --tue:#dcfce7;
+  --wed:#fef3c7;
+  --thu:#fce7f3;
+  --fri:#ede9fe;
+  --sat:#cffafe;
+  --sun:#fee2e2;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,#f8fafc 0%,#ffffff 34%);
+  color:var(--text);
+}
+main{
+  width:min(1120px, calc(100% - 32px));
+  margin:0 auto;
+  padding:28px 0 36px;
+}
+.app-shell{
+  background:var(--surface);
+  border:1px solid #e4e7ec;
+  border-radius:24px;
+  box-shadow:var(--shadow);
+  padding:24px;
+}
+.header{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:20px;
+  align-items:end;
+  margin-bottom:20px;
+}
+.eyebrow{
+  font-size:13px;
+  color:var(--muted);
+  font-weight:700;
+  letter-spacing:.02em;
+}
+h1{
+  margin:4px 0 0;
+  font-size:32px;
+  line-height:1.05;
+  letter-spacing:-.03em;
+}
+.week-select{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:210px;
+}
+.week-select label{
+  font-size:12px;
+  font-weight:700;
+  color:var(--muted);
+}
+select,button{font:inherit}
+select{
+  width:100%;
+  min-height:46px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:10px 12px;
+  background:#fff;
+  color:var(--text);
+  font-size:16px;
+}
+.days{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:10px;
+  margin-bottom:18px;
+}
+.daybtn{
+  min-height:82px;
+  border:1px solid rgba(15,23,42,.12);
+  border-radius:16px;
+  padding:12px 8px;
+  color:var(--text);
+  font-weight:800;
+  text-align:center;
+  cursor:pointer;
+  transition:transform .12s ease, box-shadow .12s ease, outline-color .12s ease;
+}
+.daybtn span{
+  display:block;
+  font-size:13px;
+  color:#475467;
+  margin-top:4px;
+  font-weight:700;
+}
+.daybtn[aria-pressed="true"]{
+  outline:3px solid #172033;
+  outline-offset:2px;
+  box-shadow:0 6px 18px rgba(16,24,40,.12);
+  transform:translateY(-1px);
+}
+.mon{background:var(--mon)}
+.tue{background:var(--tue)}
+.wed{background:var(--wed)}
+.thu{background:var(--thu)}
+.fri{background:var(--fri)}
+.sat{background:var(--sat)}
+.sun{background:var(--sun)}
+
+.content-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.65fr) minmax(280px,.75fr);
+  gap:18px;
+  align-items:stretch;
+}
+.card{
+  border:1px solid rgba(15,23,42,.12);
+  border-radius:20px;
+  padding:24px;
+  min-height:300px;
+}
+.card-head{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-start;
+}
+.date{
+  font-size:14px;
+  color:#475467;
+  font-weight:600;
+}
+.type{
+  font-size:34px;
+  line-height:1.05;
+  font-weight:850;
+  margin-top:4px;
+  letter-spacing:-.03em;
+}
+.km{
+  border:1px solid rgba(15,23,42,.16);
+  background:#fff;
+  border-radius:999px;
+  padding:8px 13px;
+  font-weight:850;
+  white-space:nowrap;
+  font-size:17px;
+}
+.detail{
+  margin-top:28px;
+  font-size:20px;
+  line-height:1.55;
+  max-width:800px;
+}
+.effort{
+  margin-top:22px;
+  border:1px solid rgba(15,23,42,.15);
+  background:rgba(255,255,255,.9);
+  border-radius:14px;
+  padding:13px 14px;
+  font-size:15px;
+  line-height:1.45;
+}
+.side{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.info{
+  background:var(--surface-soft);
+  border:1px solid #e4e7ec;
+  border-radius:18px;
+  padding:18px;
+}
+.info h2{
+  font-size:15px;
+  margin:0 0 8px;
+}
+.info p{
+  margin:0;
+  color:#475467;
+  font-size:14px;
+  line-height:1.5;
+}
+.progress{
+  display:flex;
+  align-items:end;
+  gap:8px;
+  margin-top:12px;
+}
+.progress .big{
+  font-size:32px;
+  line-height:1;
+  font-weight:850;
+}
+.progress .small{
+  color:var(--muted);
+  font-size:13px;
+  padding-bottom:3px;
+}
+.nav{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:18px;
+}
+.nav button{
+  min-height:48px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#fff;
+  color:var(--text);
+  font-weight:800;
+  cursor:pointer;
+}
+.nav button:last-child{background:#eef2f6}
+.footer-note{
+  margin-top:16px;
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+  line-height:1.45;
+}
+@media (hover:hover){
+  .daybtn:hover,.nav button:hover{filter:brightness(.985)}
+}
+@media (max-width:820px){
+  main{width:min(100% - 20px,760px);padding:12px 0 22px}
+  .app-shell{padding:14px;border-radius:18px}
+  .header{grid-template-columns:1fr;gap:14px;align-items:stretch}
+  .week-select{min-width:0}
+  h1{font-size:27px}
+  .days{
+    display:flex;
+    overflow-x:auto;
+    gap:8px;
+    padding-bottom:4px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .daybtn{min-width:68px;min-height:70px}
+  .content-grid{grid-template-columns:1fr}
+  .card{padding:18px;min-height:0}
+  .type{font-size:28px}
+  .detail{font-size:17px;margin-top:20px}
+  .side{display:grid;grid-template-columns:1fr 1fr}
+}
+@media (max-width:520px){
+  .side{grid-template-columns:1fr}
+  .card-head{align-items:flex-start}
+  .km{font-size:15px;padding:7px 11px}
+  .nav{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<main>
+  <section class="app-shell">
+    <div class="header">
+      <div>
+        <div class="eyebrow">22-WEEK DAILY PROGRESSION</div>
+        <h1>Daily HIIT Run-Walk</h1>
+      </div>
+      <div class="week-select">
+        <label for="week">Training week</label>
+        <select id="week" aria-label="Choose training week"></select>
+      </div>
+    </div>
+
+    <div id="days" class="days" aria-label="Days of week"></div>
+
+    <div class="content-grid">
+      <section id="card" class="card" aria-live="polite">
+        <div class="card-head">
+          <div>
+            <div id="date" class="date"></div>
+            <div class="type">HIIT Run-Walk</div>
+          </div>
+          <div id="km" class="km"></div>
+        </div>
+        <div id="detail" class="detail"></div>
+        <div id="effort" class="effort"></div>
+      </section>
+
+      <aside class="side">
+        <div class="info">
+          <h2>Pattern</h2>
+          <p>200 m running + 200 m walking. Repeat until the day's target distance is complete.</p>
+        </div>
+        <div class="info">
+          <h2>This week's target</h2>
+          <div class="progress">
+            <div id="weeklyKm" class="big"></div>
+            <div class="small">each day</div>
+          </div>
+          <p style="margin-top:10px">The daily target increases by 500 m each week.</p>
+        </div>
+        <div class="info">
+          <h2>Running intensity</h2>
+          <p>Keep the 200 m running portions controlled, not all-out sprinting. Walking sections are comfortable recovery.</p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="nav">
+      <button id="prev" type="button">← Previous day</button>
+      <button id="next" type="button">Next day →</button>
+    </div>
+
+    <div class="footer-note">
+      Each weekday has its own colour so the schedule is easier to scan on phone and computer.
+    </div>
+  </section>
+</main>
+
+<script>
+const data = [{"week": 1, "startISO": "2026-09-28", "startLabel": "28 Sep", "km": 2.0, "rx": "5 full cycles of 200 m running + 200 m walking"}, {"week": 2, "startISO": "2026-10-05", "startLabel": "05 Oct", "km": 2.5, "rx": "6 full cycles of 200 m running + 200 m walking, then 100 m running"}, {"week": 3, "startISO": "2026-10-12", "startLabel": "12 Oct", "km": 3.0, "rx": "7 full cycles of 200 m running + 200 m walking, then 200 m running"}, {"week": 4, "startISO": "2026-10-19", "startLabel": "19 Oct", "km": 3.5, "rx": "8 full cycles of 200 m running + 200 m walking, then 200 m running + 100 m walking"}, {"week": 5, "startISO": "2026-10-26", "startLabel": "26 Oct", "km": 4.0, "rx": "10 full cycles of 200 m running + 200 m walking"}, {"week": 6, "startISO": "2026-11-02", "startLabel": "02 Nov", "km": 4.5, "rx": "11 full cycles of 200 m running + 200 m walking, then 100 m running"}, {"week": 7, "startISO": "2026-11-09", "startLabel": "09 Nov", "km": 5.0, "rx": "12 full cycles of 200 m running + 200 m walking, then 200 m running"}, {"week": 8, "startISO": "2026-11-16", "startLabel": "16 Nov", "km": 5.5, "rx": "13 full cycles of 200 m running + 200 m walking, then 200 m running + 100 m walking"}, {"week": 9, "startISO": "2026-11-23", "startLabel": "23 Nov", "km": 6.0, "rx": "15 full cycles of 200 m running + 200 m walking"}, {"week": 10, "startISO": "2026-11-30", "startLabel": "30 Nov", "km": 6.5, "rx": "16 full cycles of 200 m running + 200 m walking, then 100 m running"}, {"week": 11, "startISO": "2026-12-07", "startLabel": "07 Dec", "km": 7.0, "rx": "17 full cycles of 200 m running + 200 m walking, then 200 m running"}, {"week": 12, "startISO": "2026-12-14", "startLabel": "14 Dec", "km": 7.5, "rx": "18 full cycles of 200 m running + 200 m walking, then 200 m running + 100 m walking"}, {"week": 13, "startISO": "2026-12-21", "startLabel": "21 Dec", "km": 8.0, "rx": "20 full cycles of 200 m running + 200 m walking"}, {"week": 14, "startISO": "2026-12-28", "startLabel": "28 Dec", "km": 8.5, "rx": "21 full cycles of 200 m running + 200 m walking, then 100 m running"}, {"week": 15, "startISO": "2027-01-04", "startLabel": "04 Jan", "km": 9.0, "rx": "22 full cycles of 200 m running + 200 m walking, then 200 m running"}, {"week": 16, "startISO": "2027-01-11", "startLabel": "11 Jan", "km": 9.5, "rx": "23 full cycles of 200 m running + 200 m walking, then 200 m running + 100 m walking"}, {"week": 17, "startISO": "2027-01-18", "startLabel": "18 Jan", "km": 10.0, "rx": "25 full cycles of 200 m running + 200 m walking"}, {"week": 18, "startISO": "2027-01-25", "startLabel": "25 Jan", "km": 10.5, "rx": "26 full cycles of 200 m running + 200 m walking, then 100 m running"}, {"week": 19, "startISO": "2027-02-01", "startLabel": "01 Feb", "km": 11.0, "rx": "27 full cycles of 200 m running + 200 m walking, then 200 m running"}, {"week": 20, "startISO": "2027-02-08", "startLabel": "08 Feb", "km": 11.5, "rx": "28 full cycles of 200 m running + 200 m walking, then 200 m running + 100 m walking"}, {"week": 21, "startISO": "2027-02-15", "startLabel": "15 Feb", "km": 12.0, "rx": "30 full cycles of 200 m running + 200 m walking"}, {"week": 22, "startISO": "2027-02-22", "startLabel": "22 Feb", "km": 12.5, "rx": "31 full cycles of 200 m running + 200 m walking, then 100 m running"}];
+const names=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const dayClasses=['mon','tue','wed','thu','fri','sat','sun'];
+let wi=0,di=0;
+
+const week=document.getElementById('week');
+const days=document.getElementById('days');
+
+data.forEach((x,i)=>{
+  const o=document.createElement('option');
+  o.value=i;
+  o.textContent=`Week ${x.week} · ${x.startLabel}`;
+  week.appendChild(o);
+});
+
+(function chooseToday(){
+  const now=new Date();
+  const planStart=new Date('2026-09-28T00:00:00');
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const diff=Math.floor((today-planStart)/86400000);
+  if(diff>=0 && diff<154){
+    wi=Math.min(21,Math.floor(diff/7));
+    const jsDay=now.getDay();
+    di=jsDay===0?6:jsDay-1;
+  }
+})();
+
+function render(){
+  week.value=wi;
+  const x=data[wi];
+  days.innerHTML='';
+
+  for(let d=0;d<7;d++){
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='daybtn '+dayClasses[d];
+    b.setAttribute('aria-pressed',d===di?'true':'false');
+    b.innerHTML=`<strong>${names[d]}</strong><span>${x.km.toFixed(1)} km</span>`;
+    b.addEventListener('click',()=>{di=d;render();});
+    days.appendChild(b);
+  }
+
+  const dt=new Date(x.startISO+'T00:00:00');
+  dt.setDate(dt.getDate()+di);
+
+  document.getElementById('date').textContent=
+    dt.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('km').textContent=x.km.toFixed(1)+' km';
+  document.getElementById('weeklyKm').textContent=x.km.toFixed(1)+' km';
+  document.getElementById('detail').textContent=
+    x.rx + '. Keep the running sections controlled rather than sprinting.';
+  document.getElementById('effort').innerHTML=
+    '<strong>Effort:</strong> run portions = controlled moderate-hard (about RPE 6–7/10); walk portions = comfortable recovery.';
+
+  const card=document.getElementById('card');
+  card.className='card '+dayClasses[di];
+}
+
+week.addEventListener('change',e=>{
+  wi=Number(e.target.value);
+  di=0;
+  render();
+});
+document.getElementById('prev').addEventListener('click',()=>{
+  if(di>0)di--;
+  else if(wi>0){wi--;di=6}
+  render();
+});
+document.getElementById('next').addEventListener('click',()=>{
+  if(di<6)di++;
+  else if(wi<21){wi++;di=0}
+  render();
+});
+render();
+</script>
+</body>
+</html>
